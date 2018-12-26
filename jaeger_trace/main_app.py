@@ -15,10 +15,13 @@ import time
 app = Flask(__name__)
 tracer = init_tracer('main-tracer')
 init_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+count = 0
 
 
+# first call to home endpoint
 @app.route("/home")
 def home():
+	global count
 
 	with tracer.start_active_span('home-span') as scope:
 		home_span='home_span'
@@ -30,17 +33,19 @@ def home():
 		init_redis.set('item_ordered', item_name)
 		time.sleep(5)
 		assign_delivery(item_name)
+		count++
 		return "Your food is on the way...."
 
 
 def assign_delivery(with_item):
+	global count
 	print("The delivery is being assigned....")
 	with tracer.start_active_span('Assign-Delivery') as scope:
 		delv_guy = 'salvador'
 		scope.span.set_tag('Delivery_Guy', delv_guy)
 		init_redis.set('Delivery_Guy', delv_guy)
 		db_handler(8082, delivery_guy=delv_guy, order_item=with_item)
-		return "everything done..."
+		return count
 
 
 def db_handler(port, **details):
@@ -57,6 +62,16 @@ def db_handler(port, **details):
 	return "request completed"
 
 
+
+# call for track-order endpoint
+@app.route("/track-order")
+def list_users_main():
+	with tracer.start_active_span('track-order') as scope:
+
+
+
+
 if __name__ == "__main__":
-	app.run(port=8081)	
+    app.debug = True
+    app.run(port=8081)	
 	
