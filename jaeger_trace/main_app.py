@@ -33,7 +33,7 @@ def home():
 		init_redis.set('item_ordered', item_name)
 		time.sleep(5)
 		assign_delivery(item_name)
-		count++
+		count += 1
 		return "Your food is on the way...."
 
 
@@ -64,11 +64,9 @@ def db_handler(port, **details):
 
 
 # call for track-order endpoint
-@app.route("/track-order")
-def list_users_main():
-	with tracer.start_active_span('track-order') as scope:
-
-
+#@app.route("/track-order")
+#def list_users_main():
+#	with tracer.start_active_span('track-order') as scope:
 
 
 if __name__ == "__main__":
