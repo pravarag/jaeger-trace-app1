@@ -8,37 +8,36 @@ from opentracing.propagation import Format
 import opentracing
 import redis
 import time
-
+import sys
 
 
 
 app = Flask(__name__)
 tracer = init_tracer('main-tracer')
 init_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
-count = 0
 
 
 # first call to home endpoint
 @app.route("/home")
 def home():
-	global count
-
 	with tracer.start_active_span('home-span') as scope:
 		home_span='home_span'
 		scope.span.set_tag('home_span', home_span)
-		print("Tis home-tracer's home-span")
-		item_name = input("Enter the food item: ")
-		# set new redis key for this span
-		init_redis.set('home', 'this is key for home_span')
+		try:
+			item_name = request.args.get('item')
+		except requests.exceptions.RequestException as e:
+			return("Couldn't connect to the mentioned service")
+			#sys.exit(1)
+		print('Item entered: ', item_name)
+		# set the redis keys
+		init_redis.set('home', 'home_span')
 		init_redis.set('item_ordered', item_name)
 		time.sleep(5)
 		assign_delivery(item_name)
-		count += 1
 		return "Your food is on the way...."
 
 
 def assign_delivery(with_item):
-	global count
 	print("The delivery is being assigned....")
 	with tracer.start_active_span('Assign-Delivery') as scope:
 		delv_guy = 'salvador'
@@ -57,19 +56,9 @@ def db_handler(port, **details):
 	headers=details
 	tracer.inject(span, Format.HTTP_HEADERS, headers)
 	r = requests.get(url, headers=headers)
-	# list_keys = init_redis.keys()
-	# print(list_keys)
 	return "request completed"
 
 
-
-# call for track-order endpoint
-#@app.route("/track-order")
-#def list_users_main():
-#	with tracer.start_active_span('track-order') as scope:
-
-
 if __name__ == "__main__":
-    app.debug = True
-    app.run(port=8081)	
-	
+    #app.debug = True
+    app.run(port=8081)
