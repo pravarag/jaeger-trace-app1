@@ -44,7 +44,7 @@ def assign_delivery(with_item):
 		scope.span.set_tag('Delivery_Guy', delv_guy)
 		init_redis.set('Delivery_Guy', delv_guy)
 		db_handler(8082, delivery_guy=delv_guy, order_item=with_item)
-		return count
+		return "delivery assigned..."
 
 
 def db_handler(port, **details):
