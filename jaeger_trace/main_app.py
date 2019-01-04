@@ -48,7 +48,8 @@ def assign_delivery(with_item):
 
 
 def db_handler(port, **details):
-	url = 'http://127.0.0.1:{}/db'.format(port)
+	ip = str(os.getenv('IP'))
+	url = 'http://'+ip+':{}/db'.format(port)
 	span = tracer.active_span
 	span.set_tag(tags.HTTP_METHOD, 'GET')
 	span.set_tag(tags.HTTP_URL, url)
