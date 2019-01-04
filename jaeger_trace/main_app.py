@@ -9,12 +9,15 @@ import opentracing
 import redis
 import time
 import sys
+import os
 
 
 
 app = Flask(__name__)
 tracer = init_tracer('main-tracer')
-init_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_host = str(os.getenv('REDIS_HOST'))
+#redis_port = str(os.getenv('REDIS_PORT'))
+init_redis = redis.StrictRedis(host=redis_host, port=6379, db=0)
 
 
 # first call to home endpoint
