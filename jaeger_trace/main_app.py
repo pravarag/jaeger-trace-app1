@@ -16,9 +16,10 @@ import os
 app = Flask(__name__)
 tracer = init_tracer('main-tracer')
 redis_host = str(os.getenv('REDIS_HOST'))
-#redis_port = str(os.getenv('REDIS_PORT'))
+redis_port = str(os.getenv('REDIS_PORT'))
 init_redis = redis.StrictRedis(host=redis_host, port=6379, db=0)
 
+#init_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 # first call to home endpoint
 @app.route("/home")
@@ -53,6 +54,7 @@ def assign_delivery(with_item):
 def db_handler(port, **details):
 	ip = str(os.getenv('IP'))
 	url = 'http://'+ip+':{}/db'.format(port)
+	#url = 'http://localhost:8082/'
 	span = tracer.active_span
 	span.set_tag(tags.HTTP_METHOD, 'GET')
 	span.set_tag(tags.HTTP_URL, url)
