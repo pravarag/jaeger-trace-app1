@@ -50,7 +50,7 @@ def assign_delivery(with_item):
 		delv_guy = 'salvador'
 		scope.span.set_tag('Delivery_Guy', delv_guy)
 		init_redis.set('Delivery_Guy', delv_guy)
-		url = 'http://' + app2_host + ':8082/db'
+		url = 'http://' + app2_host + '/db'
 		resp = db_handler(8082, url, delivery_guy=delv_guy, order_item=with_item)
 		# retrv_order_id = init_redis.get('Order-Id')
 		# print(retrv_order_id)
@@ -69,7 +69,7 @@ def call_redis_display():
 			return("Couldn't connect to the mentioned service")
 
 		print("Order id for details display: ", ord_id)
-		url = 'http://'+app3_host+':8083/display'
+		url = 'http://'+app3_host+'/display'
 		resp = db_handler(8083, url, order_id=ord_id)
 	# import pdb; pdb.set_trace()
 	return resp.text
