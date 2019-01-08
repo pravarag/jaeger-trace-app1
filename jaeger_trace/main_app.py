@@ -28,8 +28,10 @@ app3_host = os.getenv('APP3_HOSTNAME', 'localhost')
 @app.route("/home")
 def home():
 	with tracer.start_active_span('home-span') as scope:
+	#with tracer.start_span('home-span') as span:
 		home_span='home_span'
 		scope.span.set_tag('home_span', home_span)
+		#span.set_tag('home_span', home_span)
 		try:
 			item_name = request.args.get('item')
 		except requests.exceptions.RequestException as e:
@@ -47,10 +49,13 @@ def home():
 def assign_delivery(with_item):
 	print("The delivery is being assigned....")
 	with tracer.start_active_span('Assign-Delivery') as scope:
+	#with tracer.start_span('Assign-Delivery') as span:
 		delv_guy = 'salvador'
 		scope.span.set_tag('Delivery_Guy', delv_guy)
+		#span.set_tag('Delivery_Guy', delv_guy)
 		init_redis.set('Delivery_Guy', delv_guy)
 		url = 'http://' + app2_host + '/db'
+		#url = 'http://localhost:8082/db'
 		resp = db_handler(8082, url, delivery_guy=delv_guy, order_item=with_item)
 		# retrv_order_id = init_redis.get('Order-Id')
 		# print(retrv_order_id)
@@ -61,8 +66,10 @@ def assign_delivery(with_item):
 @app.route('/getdetails')
 def call_redis_display():
 	with tracer.start_active_span('display-order-details') as scope:
+	#with tracer.start_span('display-order-details') as span:
 		order_ = 'display-order-details'
 		scope.span.set_tag('display-order-details', order_)
+		#span.set_tag('display-order-details', order)
 		try:
 			ord_id = request.args.get('order_id')
 		except requests.exceptions.RequestException as e:
@@ -70,6 +77,7 @@ def call_redis_display():
 
 		print("Order id for details display: ", ord_id)
 		url = 'http://'+app3_host+'/display'
+		#url = 'http://localhost:8083/display'
 		resp = db_handler(8083, url, order_id=ord_id)
 	# import pdb; pdb.set_trace()
 	return resp.text
