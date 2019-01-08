@@ -15,8 +15,9 @@ def init_tracer(service):
 				'sampler': {
 				'type': 'const',
 				'param': 1,
-				'local_agent':{'reporting_host': jaeger_host},
+				
 			},
+			'local_agent':{'reporting_host': jaeger_host},
 			'logging': True,
 			'reporter_batch_size': 1,
 			},
