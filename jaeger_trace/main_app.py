@@ -12,7 +12,7 @@ import sys
 import os
 
 
-# this is just a test comment
+# this is just a test
 app = Flask(__name__)
 tracer = init_tracer('main-tracer')
 redis_host = os.getenv('REDIS_HOST', 'localhost')
