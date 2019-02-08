@@ -12,7 +12,7 @@ import sys
 import os
 
 
-
+# this is just a test comment for jenkins setup
 app = Flask(__name__)
 tracer = init_tracer('main-tracer')
 redis_host = os.getenv('REDIS_HOST', 'localhost')
